@@ -81,7 +81,7 @@ textarea {
 .login-hero-photo {
   background:
     linear-gradient(90deg, rgba(247, 248, 250, 0.02) 0%, rgba(247, 248, 250, 0.08) 36%, rgba(247, 248, 250, 0.22) 58%, rgba(247, 248, 250, 0.52) 78%, rgba(247, 248, 250, 0.8) 92%, rgba(247, 248, 250, 0.9) 100%),
-    url("http://localhost:7860/static/images/login_bg.jpg") center center / cover no-repeat;
+    url("https://bns-gpt-v2.onrender.com/static/images/login_bg.jpg") center center / cover no-repeat;
   transform: scale(1.02);
 }
 
@@ -106,7 +106,7 @@ textarea {
   position: relative;
   z-index: 1;
   padding: 52px 48px;
-  max-width: 680px;
+  max-width: calc(100% - 360px);
 }
 
 .eyebrow-pill {
@@ -158,13 +158,15 @@ textarea {
   max-width: 560px;
   font-size: 18px;
   font-weight: 600;
+  color: #142638;
+  text-shadow: 0 1px 1px rgba(255, 255, 255, 0.42);
 }
 
 .hero-stat-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 14px;
-  max-width: 700px;
+  max-width: 100%;
   margin-top: 24px;
 }
 
@@ -428,7 +430,7 @@ textarea {
   inset: 0;
   background:
     linear-gradient(180deg, rgba(247,248,250,0.34), rgba(247,248,250,0.56)),
-    url("http://localhost:7860/static/images/chat_bg.jpg") center center / cover no-repeat;
+    url("https://bns-gpt-v2.onrender.com/static/images/chat_bg.jpg") center center / cover no-repeat;
   opacity: 0.98;
   pointer-events: none;
   transform: scale(1.03);
@@ -762,7 +764,7 @@ textarea {
   font-weight: 800;
 }
 
-@media (max-width: 1200px) {
+@media (max-width: 1350px) {
   .login-page,
   .workspace-grid,
   .overview-grid {
@@ -779,6 +781,10 @@ textarea {
     right: auto;
     width: auto;
     margin: 0 48px 32px;
+  }
+
+  .login-hero-copy {
+    max-width: 760px;
   }
 }
 

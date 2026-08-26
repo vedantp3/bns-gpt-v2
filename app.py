@@ -128,9 +128,9 @@ async def google_auth_callback(request: Request):
         key="app_session",
         value=session_token,
         httponly=True,
-        samesite="lax",
+        samesite="none",
+        secure=True,
         max_age=30 * 86400,
-        secure=False,
     )
     return response
 
