@@ -124,12 +124,13 @@ async def google_auth_callback(request: Request):
 
     session_token = create_session_token(user["id"])
     response = RedirectResponse(url=f"{FRONTEND_URL}/chat", status_code=302)
+    is_production = FRONTEND_URL.startswith("https://")
     response.set_cookie(
         key="app_session",
         value=session_token,
         httponly=True,
-        samesite="none",
-        secure=True,
+        samesite="none" if is_production else "lax",
+        secure=is_production,
         max_age=30 * 86400,
     )
     return response
