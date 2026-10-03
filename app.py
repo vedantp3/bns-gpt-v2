@@ -11,7 +11,7 @@ from authlib.integrations.starlette_client import OAuth
 from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import JSONResponse, RedirectResponse
+from fastapi.responses import JSONResponse, RedirectResponse, Response
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 from starlette.middleware.sessions import SessionMiddleware
@@ -88,8 +88,11 @@ async def root():
     return RedirectResponse(url=FRONTEND_URL, status_code=302)
 
 
-@app.get("/auth/google")
+@app.api_route("/auth/google", methods=["GET", "HEAD"])
 async def login_with_google(request: Request):
+    if request.method == "HEAD":
+        return Response(status_code=204)
+
     redirect_uri = str(request.base_url).rstrip("/") + "/auth/callback"
     try:
         return await oauth.google.authorize_redirect(request, redirect_uri)

@@ -8,6 +8,7 @@ BNS Legal Intelligence application.
 import os
 import re
 import sqlite3
+import threading
 
 from datasets import load_dataset
 from dotenv import load_dotenv
@@ -18,50 +19,68 @@ load_dotenv()
 groq_client = Groq(api_key=os.environ.get("GROQ_API_KEY"))
 MODEL_NAME = "openai/gpt-oss-20b"
 
-print("[*] Initializing local dataset & search indexes from Hugging Face...")
-dataset = load_dataset("GSMS-B/indian-legal-sections-bns-bnss-bsa-2023", token=False)
-full_df = dataset["train"].to_pandas()
-full_df["clean_act"] = full_df["act"].astype(str).str.strip().str.upper()
+_conn: sqlite3.Connection | None = None
+_index_lock = threading.Lock()
 
-bns_df = full_df[
-    full_df["clean_act"].str.contains("BNS", na=False)
-    & ~full_df["clean_act"].str.contains("BNSS", na=False)
-].reset_index(drop=True)
-bnss_df = full_df[full_df["clean_act"].str.contains("BNSS", na=False)].reset_index(drop=True)
-bsa_df = full_df[full_df["clean_act"].str.contains("BSA", na=False)].reset_index(drop=True)
 
-_conn = sqlite3.connect("statutory_search.db", check_same_thread=False)
-_cursor = _conn.cursor()
+def _initialize_search_index() -> None:
+    global _conn
+    if _conn is not None:
+        return
 
-_acts_registry = {"bns_fts": bns_df, "bnss_fts": bnss_df, "bsa_fts": bsa_df}
+    with _index_lock:
+        if _conn is not None:
+            return
 
-for table_name, df in _acts_registry.items():
-    _cursor.execute(f"DROP TABLE IF EXISTS {table_name}")
-    _cursor.execute(
-        f"""
-        CREATE VIRTUAL TABLE {table_name} USING fts5(
-            chunk_id, section_number, section_title, chapter, text,
-            tokenize = 'unicode61'
-        )
-        """
-    )
-    for _, row in df.iterrows():
-        _cursor.execute(
-            f"""
-            INSERT INTO {table_name} (chunk_id, section_number, section_title, chapter, text)
-            VALUES (?, ?, ?, ?, ?)
-            """,
-            (
-                str(row.get("chunk_id", "") or "").strip(),
-                str(row.get("section_number", "") or "").strip(),
-                str(row.get("section_title", "") or "").strip(),
-                str(row.get("chapter", "") or "").strip(),
-                str(row.get("text", "") or "").strip(),
-            ),
-        )
+        print("[*] Initializing local dataset & search indexes from Hugging Face...")
+        dataset = load_dataset("GSMS-B/indian-legal-sections-bns-bnss-bsa-2023", token=False)
+        full_df = dataset["train"].to_pandas()
+        full_df["clean_act"] = full_df["act"].astype(str).str.strip().str.upper()
 
-_conn.commit()
-print("[OK] SQLite FTS5 virtual tables built successfully.\n")
+        acts_registry = {
+            "bns_fts": full_df[
+                full_df["clean_act"].str.contains("BNS", na=False)
+                & ~full_df["clean_act"].str.contains("BNSS", na=False)
+            ],
+            "bnss_fts": full_df[full_df["clean_act"].str.contains("BNSS", na=False)],
+            "bsa_fts": full_df[full_df["clean_act"].str.contains("BSA", na=False)],
+        }
+
+        conn = sqlite3.connect("statutory_search.db", check_same_thread=False)
+        try:
+            cursor = conn.cursor()
+            for table_name, df in acts_registry.items():
+                cursor.execute(f"DROP TABLE IF EXISTS {table_name}")
+                cursor.execute(
+                    f"""
+                    CREATE VIRTUAL TABLE {table_name} USING fts5(
+                        chunk_id, section_number, section_title, chapter, text,
+                        tokenize = 'unicode61'
+                    )
+                    """
+                )
+                cursor.executemany(
+                    f"INSERT INTO {table_name} (chunk_id, section_number, section_title, chapter, text) "
+                    "VALUES (?, ?, ?, ?, ?)",
+                    [
+                        (
+                            str(row.get("chunk_id", "") or "").strip(),
+                            str(row.get("section_number", "") or "").strip(),
+                            str(row.get("section_title", "") or "").strip(),
+                            str(row.get("chapter", "") or "").strip(),
+                            str(row.get("text", "") or "").strip(),
+                        )
+                        for _, row in df.iterrows()
+                    ],
+                )
+
+            conn.commit()
+        except Exception:
+            conn.close()
+            raise
+
+        _conn = conn
+        print("[OK] SQLite FTS5 virtual tables built successfully.\n")
 
 _SYSTEM_PROMPT = (
     "You are an expert Indian legal assistant specializing in the Bharatiya Nyaya Sanhita (BNS), "
@@ -142,6 +161,7 @@ def _execute_fts_query(table_name: str, clean_query: str, section_num: str | Non
 
 
 def route_and_search(user_query: str, selected_act: str = "ALL"):
+    _initialize_search_index()
     sanitized_q = re.sub(r"[^a-zA-Z0-9\s]", "", user_query).strip()
     sec_match = re.search(r"\b(?:section|sec)?\s*(\d+)\b", sanitized_q, re.IGNORECASE)
     target_sec = sec_match.group(1) if sec_match else None
