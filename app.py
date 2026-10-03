@@ -83,8 +83,10 @@ async def health():
     return {"status": "ok"}
 
 
-@app.get("/")
-async def root():
+@app.api_route("/", methods=["GET", "HEAD"])
+async def root(request: Request):
+    if request.method == "HEAD":
+        return Response(status_code=204)
     return RedirectResponse(url=FRONTEND_URL, status_code=302)
 
 
