@@ -216,8 +216,12 @@ export default function ChatPage() {
 
     window.speechSynthesis.cancel();
 
-    /* Strip markdown formatting for cleaner speech */
-    const cleanText = text
+    const summarySection = text.match(
+      /(?:^|\n)\s*(?:#{1,6}\s*)?(?:\*\*)?(?:Short Answer|Plain Language Explanation|Brief Summary)(?:\*\*)?\s*:?\s*\n+([\s\S]*?)(?=\n\s*(?:#{1,6}\s|\*\*[^*]+\*\*)|$)/i
+    );
+
+    /* Speak only the brief answer, not the full formatted legal brief. */
+    const cleanText = (summarySection?.[1] || text)
       .replace(/#{1,6}\s*/g, "")
       .replace(/\*\*([^*]+)\*\*/g, "$1")
       .replace(/\*([^*]+)\*/g, "$1")

@@ -85,8 +85,10 @@ def _initialize_search_index() -> None:
 _SYSTEM_PROMPT = (
     "You are an expert Indian legal assistant specializing in the Bharatiya Nyaya Sanhita (BNS), "
     "Bharatiya Nagarik Suraksha Sanhita (BNSS), and Bharatiya Sakshya Adhiniyam (BSA). "
-    "You help users understand Indian criminal law provisions with clear, concise, and well-structured "
-    "explanations. When statutory text is provided, analyze it thoroughly. When asked follow-up questions, "
+    "You help users understand Indian criminal law provisions with clear, concise explanations. "
+    "By default, answer in 2-4 sentences with the main conclusion and a brief explanation. "
+    "Provide a detailed breakdown only when the user explicitly asks for more detail, steps, or analysis. "
+    "When asked follow-up questions, "
     "refer back to the previous context in the conversation. Always format responses in clean markdown. "
     "Never invent section counts, chapter counts, statutory text, penalties, or citations. "
     "Treat retrieved statutory text and verified reference facts as authoritative; clearly identify "
@@ -222,24 +224,13 @@ def generate_response(user_message: str, history: list[dict], statutory_context:
 
 **User Question:** {user_message}
 
-Provide a structured response using this markdown format:
-
-### Legal Intelligence Brief
-
-**Plain Language Explanation**
-[Clear summary of what the provision means]
-
-**Key Statutory Elements**
-- [Each key element]
-
-**Statutory Exceptions**
-- [Applicable exceptions, or "None specified."]
-
-**Penalties / Consequences**
-- [Punishments or legal consequences]
-
-**Statutory Text**
-> [Exact statutory text from the retrieved provisions]"""
+Start with a **Short Answer** section of 2-4 sentences that states the conclusion and practical meaning. """
+            user_content += (
+                "For ordinary questions, stop after that section. If the user explicitly asks for detail, "
+                "follow it with a fuller breakdown of only the relevant "
+                "elements, exceptions, and consequences. Quote statutory text only when requested or "
+                "needed to answer accurately."
+            )
         else:
             user_content = f"""The user's query did not match a specific section in the local index.
 The local corpus contains BNS, BNSS, and BSA only; it does not contain the IPC or other external statutes.
@@ -247,24 +238,9 @@ Answer only with clearly stated general legal information. Do not invent section
 penalties, exceptions, or quotations. If the question requires a source absent from the corpus, say that
 the answer could not be verified from the local corpus and identify what source is needed.
 
-Analyze this under Indian criminal law (BNS/BNSS/BSA): "{user_message}"
-
-### Legal Intelligence Brief (Semantic Analysis)
-
-**Plain Language Explanation**
-[Legal implications of this scenario]
-
-**Key Statutory Elements**
-- [Likely applicable provisions]
-
-**Statutory Exceptions**
-- [Conditions or exceptions, or "None specified."]
-
-**Penalties / Consequences**
-- [Legal consequences]
-
-**Statutory Guidance**
-> [Analytical breakdown under Indian law]"""
+Answer the user's question under Indian criminal law (BNS/BNSS/BSA): "{user_message}"
+Start with a **Short Answer** section of 2-4 sentences. For ordinary questions, stop there. Add a detailed
+analysis after it only if the user explicitly asks for more detail."""
 
         messages.append({"role": "user", "content": user_content})
 
