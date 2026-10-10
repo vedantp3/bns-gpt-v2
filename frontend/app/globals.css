@@ -734,7 +734,7 @@ textarea {
 
 .composer {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 170px;
+  grid-template-columns: minmax(0, 1fr) auto;
   gap: 12px;
   padding: 12px;
   border-radius: 28px;
@@ -749,9 +749,246 @@ textarea {
   resize: vertical;
 }
 
+.composer-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: stretch;
+  min-width: 170px;
+}
+
+.voice-unavailable {
+  max-width: 170px;
+  align-self: center;
+  color: #61717f;
+  font-size: 12px;
+  line-height: 1.35;
+  text-align: center;
+}
+
 .send-button:disabled {
   opacity: 0.7;
   cursor: progress;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   VOICE-TO-VOICE UI
+   ═══════════════════════════════════════════════════════════ */
+
+/* ── Mic Button ─────────────────────────────────────────── */
+.voice-button {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 48px;
+  border-radius: 18px;
+  border: 1px solid rgba(23, 54, 93, 0.12);
+  background: linear-gradient(180deg, #ffffff, #f4f7fa);
+  color: var(--navy);
+  cursor: pointer;
+  transition: all 0.25s ease;
+  box-shadow: 0 8px 18px rgba(23, 33, 43, 0.06);
+  overflow: visible;
+}
+
+.voice-button:hover:not(:disabled) {
+  border-color: rgba(33, 77, 135, 0.28);
+  background: linear-gradient(180deg, #ffffff, #eaf0f6);
+  transform: translateY(-1px);
+  box-shadow: 0 12px 24px rgba(23, 33, 43, 0.1);
+}
+
+.voice-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Recording state — red glow */
+.voice-button.recording {
+  background: linear-gradient(135deg, #dc2626, #ef4444);
+  border-color: rgba(220, 38, 38, 0.4);
+  color: #ffffff;
+  box-shadow: 0 8px 24px rgba(220, 38, 38, 0.3);
+}
+
+.voice-button.recording:hover:not(:disabled) {
+  background: linear-gradient(135deg, #b91c1c, #dc2626);
+}
+
+/* Speaking state — navy pulse */
+.voice-button.speaking {
+  background: linear-gradient(135deg, var(--navy), var(--royal));
+  border-color: rgba(33, 77, 135, 0.4);
+  color: #ffffff;
+  box-shadow: 0 8px 24px rgba(33, 77, 135, 0.28);
+}
+
+/* Processing state */
+.voice-button.processing {
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+  border-color: rgba(245, 158, 11, 0.4);
+  color: #ffffff;
+}
+
+/* Animated pulsing ring around mic button during recording */
+.voice-ring {
+  position: absolute;
+  inset: -6px;
+  border-radius: 22px;
+  border: 2px solid rgba(220, 38, 38, 0.5);
+  animation: voice-ring-pulse 1.5s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes voice-ring-pulse {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.3;
+    transform: scale(1.12);
+  }
+}
+
+/* ── Live Transcript Banner ────────────────────────────── */
+.voice-transcript-banner {
+  padding: 14px 18px;
+  border-radius: 20px;
+  background: linear-gradient(135deg, rgba(220, 38, 38, 0.06), rgba(255, 255, 255, 0.82));
+  border: 1px solid rgba(220, 38, 38, 0.14);
+  box-shadow: 0 8px 20px rgba(220, 38, 38, 0.06);
+  animation: voice-banner-in 0.3s ease-out;
+}
+
+@keyframes voice-banner-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.voice-transcript-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: #b91c1c;
+  margin-bottom: 8px;
+}
+
+.voice-pulse-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #dc2626;
+  animation: voice-dot-blink 1s ease-in-out infinite;
+}
+
+@keyframes voice-dot-blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.25; }
+}
+
+.voice-transcript-text {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+  color: #1f2937;
+  line-height: 1.55;
+}
+
+/* ── Voice Status Banners ──────────────────────────────── */
+.voice-status-banner {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 18px;
+  border-radius: 18px;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  animation: voice-banner-in 0.3s ease-out;
+}
+
+.voice-status-banner.processing {
+  background: linear-gradient(135deg, rgba(245, 158, 11, 0.08), rgba(255, 255, 255, 0.82));
+  border: 1px solid rgba(245, 158, 11, 0.18);
+  color: #92400e;
+}
+
+.voice-status-banner.speaking {
+  background: linear-gradient(135deg, rgba(33, 77, 135, 0.08), rgba(255, 255, 255, 0.82));
+  border: 1px solid rgba(33, 77, 135, 0.18);
+  color: var(--navy);
+}
+
+/* Spinner for processing */
+.voice-spinner {
+  animation: voice-spin 0.9s linear infinite;
+  flex-shrink: 0;
+}
+
+@keyframes voice-spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Wave bars for speaking */
+.voice-wave-bars {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  height: 20px;
+  flex-shrink: 0;
+}
+
+.voice-wave-bars span {
+  width: 3px;
+  border-radius: 999px;
+  background: var(--navy);
+}
+
+.voice-wave-bars span:nth-child(1) { height: 8px;  animation: voice-wave 0.8s ease-in-out 0.0s infinite; }
+.voice-wave-bars span:nth-child(2) { height: 14px; animation: voice-wave 0.8s ease-in-out 0.1s infinite; }
+.voice-wave-bars span:nth-child(3) { height: 20px; animation: voice-wave 0.8s ease-in-out 0.2s infinite; }
+.voice-wave-bars span:nth-child(4) { height: 14px; animation: voice-wave 0.8s ease-in-out 0.3s infinite; }
+.voice-wave-bars span:nth-child(5) { height: 8px;  animation: voice-wave 0.8s ease-in-out 0.4s infinite; }
+
+@keyframes voice-wave {
+  0%, 100% { transform: scaleY(0.5); }
+  50%      { transform: scaleY(1.2); }
+}
+
+/* Stop speaking button */
+.voice-stop-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-left: auto;
+  padding: 6px 14px;
+  border-radius: 12px;
+  border: 1px solid rgba(181, 43, 43, 0.18);
+  background: rgba(220, 38, 38, 0.08);
+  color: #991b1b;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 12px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.voice-stop-btn:hover {
+  background: rgba(220, 38, 38, 0.16);
+  border-color: rgba(181, 43, 43, 0.3);
 }
 
 .loading-shell {
@@ -804,6 +1041,19 @@ textarea {
     grid-template-columns: 1fr;
   }
 
+  .composer-actions {
+    flex-direction: row;
+    min-width: auto;
+  }
+
+  .composer-actions .voice-button {
+    min-width: 54px;
+  }
+
+  .composer-actions .voice-unavailable {
+    max-width: 110px;
+  }
+
   .hero-side-brief {
     margin: 0 22px 24px;
   }
@@ -823,3 +1073,4 @@ textarea {
     padding: 12px;
   }
 }
+
