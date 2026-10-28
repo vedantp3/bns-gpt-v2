@@ -63,6 +63,19 @@ def save_message(session_id: str, user_id: str, role: str, content: str):
     }).execute()
 
 
+def user_owns_session(user_id: str, session_id: str) -> bool:
+    """Single-row ownership check; cheaper than listing all of the user's sessions."""
+    result = (
+        supabase.table("chat_sessions")
+        .select("id")
+        .eq("id", session_id)
+        .eq("user_id", user_id)
+        .limit(1)
+        .execute()
+    )
+    return bool(result.data)
+
+
 def get_user_sessions(user_id: str, limit: int = 30) -> list[tuple[str, str]]:
     """
     Returns a list of (title, session_id) tuples for a user, newest first.
@@ -92,6 +105,33 @@ def get_session_messages(session_id: str) -> list[tuple[str, str]]:
         .execute()
     )
     return [(m["role"], m["content"]) for m in result.data]
+
+
+def delete_last_assistant_message(session_id: str):
+    """Remove the newest assistant message of a session (used when an answer is regenerated)."""
+    result = (
+        supabase.table("chat_messages")
+        .select("id")
+        .eq("session_id", session_id)
+        .eq("role", "assistant")
+        .order("created_at", desc=True)
+        .limit(1)
+        .execute()
+    )
+    if result.data:
+        supabase.table("chat_messages").delete().eq("id", result.data[0]["id"]).execute()
+
+
+def save_feedback(session_id: str, user_id: str, rating: int, question: str, answer: str, comment: str | None):
+    """Store a thumbs up (1) / down (-1) rating for an answer."""
+    supabase.table("message_feedback").insert({
+        "session_id": session_id,
+        "user_id": user_id,
+        "rating": rating,
+        "question": question,
+        "answer": answer,
+        "comment": comment,
+    }).execute()
 
 
 def delete_chat_session(session_id: str):

@@ -49,6 +49,27 @@ CREATE TABLE IF NOT EXISTS public.chat_messages (
 CREATE INDEX IF NOT EXISTS idx_chat_messages_session_id ON public.chat_messages (session_id, created_at ASC);
 
 
+-- 4. MESSAGE FEEDBACK TABLE
+--    Thumbs up (1) / down (-1) on an answer, with the question and
+--    answer text copied so ratings survive message regeneration.
+--    Existing projects: run just this block to add it.
+-- ----------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS public.message_feedback (
+    id          UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    session_id  UUID NOT NULL REFERENCES public.chat_sessions(id) ON DELETE CASCADE,
+    user_id     UUID NOT NULL REFERENCES public.users(id) ON DELETE CASCADE,
+    rating      SMALLINT NOT NULL CHECK (rating IN (-1, 1)),
+    question    TEXT NOT NULL DEFAULT '',
+    answer      TEXT NOT NULL,
+    comment     TEXT,
+    created_at  TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_message_feedback_created_at ON public.message_feedback (created_at DESC);
+
+ALTER TABLE public.message_feedback DISABLE ROW LEVEL SECURITY;
+
+
 -- ================================================================
 --  Row Level Security (RLS)
 --  Supabase enables RLS by default on new tables. Since we use the

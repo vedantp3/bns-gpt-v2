@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64">
+  <!-- Same jali motif as jali-gold.svg, in navy for light backgrounds. -->
+  <g fill="none" stroke="#17365d" stroke-width="1">
+    <circle cx="0" cy="0" r="32"/>
+    <circle cx="64" cy="0" r="32"/>
+    <circle cx="0" cy="64" r="32"/>
+    <circle cx="64" cy="64" r="32"/>
+    <circle cx="32" cy="32" r="32"/>
+    <path d="M32 24l2.5 5.5L40 32l-5.5 2.5L32 40l-2.5-5.5L24 32l5.5-2.5z"/>
+    <path d="M0 -8l2.5 5.5L8 0l-5.5 2.5L0 8l-2.5-5.5L-8 0l5.5-2.5zM64 -8l2.5 5.5L72 0l-5.5 2.5L64 8l-2.5-5.5L56 0l5.5-2.5zM0 56l2.5 5.5L8 64l-5.5 2.5L0 72l-2.5-5.5L-8 64l5.5-2.5zM64 56l2.5 5.5L72 64l-5.5 2.5L64 72l-2.5-5.5L56 64l5.5-2.5z"/>
+  </g>
+</svg>

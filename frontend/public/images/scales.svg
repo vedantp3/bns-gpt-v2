@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Scales of justice">
+  <defs>
+    <linearGradient id="brass" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#f0d68e"/>
+      <stop offset="1" stop-color="#b8892f"/>
+    </linearGradient>
+  </defs>
+  <g fill="none" stroke="url(#brass)" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M32 11v39"/>
+    <path d="M11 17c7-2.5 14-3 21-3s14 .5 21 3"/>
+    <path d="M11 17 4.5 34M11 17l6.5 17"/>
+    <path d="M53 17l-6.5 17M53 17l6.5 17"/>
+    <path d="M3 34a8 4.6 0 0 0 16 0z" fill="url(#brass)" fill-opacity=".28"/>
+    <path d="M45 34a8 4.6 0 0 0 16 0z" fill="url(#brass)" fill-opacity=".28"/>
+    <path d="M26 50h12l3 5H23z" fill="url(#brass)" fill-opacity=".28"/>
+    <path d="M19 58h26"/>
+  </g>
+  <circle cx="32" cy="8.5" r="3" fill="url(#brass)"/>
+</svg>

@@ -34,9 +34,9 @@ export default async function HomePage({ searchParams }: HomePageProps) {
           <span className="eyebrow-pill">BNS Legal Intelligence Desk</span>
           <h1>Indian criminal law research for police, courts, and investigators.</h1>
           <p>
-            A modern legal intelligence workspace for Bharatiya Nyaya Sanhita, Bharatiya
-            Nagarik Suraksha Sanhita, and Bharatiya Sakshya Adhiniyam. Designed like a
-            digital police-legal command desk instead of a generic AI chat tool.
+            A legal intelligence workspace for the Bharatiya Nyaya Sanhita, Bharatiya Nagarik
+            Suraksha Sanhita and Bharatiya Sakshya Adhiniyam — answers grounded in the statute
+            text, with the sections they rely on.
           </p>
 
           <div className="hero-stat-grid">
@@ -49,8 +49,8 @@ export default async function HomePage({ searchParams }: HomePageProps) {
               <span>Built for case review, arrest procedure, evidence flow, and legal brief preparation.</span>
             </article>
             <article className="glass-card">
-              <strong>Institutional Design</strong>
-              <span>Premium light styling inspired by Indian courts, police desks, and statute files.</span>
+              <strong>Multilingual &amp; Voice</strong>
+              <span>Answers in English, Hindi and six other Indian languages, typed or spoken.</span>
             </article>
           </div>
         </div>
@@ -73,7 +73,9 @@ export default async function HomePage({ searchParams }: HomePageProps) {
       <section className="login-panel-wrap">
         <div className="login-panel">
           <div className="login-panel-head">
-            <div className="seal-mark">AI</div>
+            <div className="seal-mark">
+              <img src="/images/scales.svg" alt="" width={38} height={38} />
+            </div>
             <div>
               <h2>Secure Access</h2>
               <p>Enter the legal intelligence workspace used for BNS, BNSS, and BSA query support.</p>
@@ -117,6 +119,14 @@ export default async function HomePage({ searchParams }: HomePageProps) {
           <div className="divider-label">Authorized Sign In</div>
 
           <a className="primary-auth-button" href={`${API_BASE_URL}/auth/google`}>
+            <span className="google-mark" aria-hidden="true">
+              <svg width="16" height="16" viewBox="0 0 48 48">
+                <path fill="#EA4335" d="M24 9.5c3.5 0 6.6 1.2 9.1 3.6l6.8-6.8C35.8 2.4 30.3 0 24 0 14.6 0 6.6 5.4 2.7 13.3l7.9 6.1C12.5 13.6 17.8 9.5 24 9.5z" />
+                <path fill="#4285F4" d="M46.1 24.5c0-1.6-.1-3.1-.4-4.5H24v9h12.4c-.5 2.9-2.2 5.3-4.6 6.9l7.4 5.7c4.3-4 6.9-9.9 6.9-17.1z" />
+                <path fill="#FBBC05" d="M10.5 28.6c-.5-1.4-.8-3-.8-4.6s.3-3.2.8-4.6l-7.9-6.1C1 16.6 0 20.2 0 24s1 7.4 2.7 10.7l7.8-6.1z" />
+                <path fill="#34A853" d="M24 48c6.5 0 11.9-2.1 15.9-5.8l-7.4-5.7c-2.1 1.4-4.8 2.3-8.5 2.3-6.2 0-11.5-4.2-13.4-9.9l-7.8 6.1C6.6 42.6 14.6 48 24 48z" />
+              </svg>
+            </span>
             Continue with Google
           </a>
 

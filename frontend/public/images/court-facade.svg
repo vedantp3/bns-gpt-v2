@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 300" role="img" aria-label="Court building">
+  <g fill="none" stroke="#17365d" stroke-width="2" stroke-linejoin="round" stroke-linecap="round">
+    <!-- finial and dome -->
+    <path d="M300 34v18"/>
+    <circle cx="300" cy="30" r="4"/>
+    <path d="M248 112c0-34 23-58 52-60 29 2 52 26 52 60"/>
+    <path d="M266 112c2-24 15-42 34-46M334 112c-2-24-15-42-34-46" stroke-opacity=".45"/>
+    <path d="M236 112h128v18H236z"/>
+    <path d="M246 112v18M258 112v18M270 112v18M282 112v18M294 112v18M306 112v18M318 112v18M330 112v18M342 112v18M354 112v18" stroke-opacity=".35"/>
+
+    <!-- cornice and entablature -->
+    <path d="M44 130h512"/>
+    <path d="M56 136h488v16H56z"/>
+    <path d="M56 144h488" stroke-opacity=".35"/>
+
+    <!-- side pavilions -->
+    <path d="M56 152v88M544 152v88"/>
+    <path d="M70 168h40v56H70zM490 168h40v56h-40z" stroke-opacity=".6"/>
+    <path d="M70 196h40M90 168v56M490 196h40M510 168v56" stroke-opacity=".35"/>
+
+    <!-- colonnade -->
+    <g>
+      <path d="M134 156h16v84h-16zM188 156h16v84h-16zM242 156h16v84h-16zM342 156h16v84h-16zM396 156h16v84h-16zM450 156h16v84h-16z"/>
+      <path d="M130 152h24M184 152h24M238 152h24M338 152h24M392 152h24M446 152h24" />
+      <path d="M142 162v72M196 162v72M250 162v72M350 162v72M404 162v72M458 162v72" stroke-opacity=".35"/>
+    </g>
+
+    <!-- central arched entrance -->
+    <path d="M276 240v-52c0-14 11-24 24-24s24 10 24 24v52"/>
+    <path d="M300 164v76" stroke-opacity=".35"/>
+
+    <!-- plinth and steps -->
+    <path d="M44 240h512v10H44z"/>
+    <path d="M30 250h540v10H30z"/>
+    <path d="M16 260h568v10H16z"/>
+  </g>
+</svg>

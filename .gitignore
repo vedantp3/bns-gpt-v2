@@ -1,10 +1,10 @@
-@"
 .env
 .env.*
 !.env.example
 __pycache__/
 *.pyc
-statutory_search.db
+.pytest_cache/
 frontend/.next/
+frontend/.next-dev/
 frontend/node_modules/
-"@ | Set-Content .gitignore
+frontend/tsconfig.tsbuildinfo
